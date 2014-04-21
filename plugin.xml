@@ -20,4 +20,13 @@
         <header-file src="dnssd.h" />
         <source-file src="dnssd.m" />
     </platform>
+    <platform name="osx">
+        <config-file target="config.xml" parent="/*">
+            <feature name="fi.peekpoke.cordova.dnssd">
+                <param name="ios-package" value="CDVBonjour"/>
+            </feature>
+        </config-file>
+        <header-file src="dnssd.h" />
+        <source-file src="dnssd.m" />
+    </platform>
 </plugin>
