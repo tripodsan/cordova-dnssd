@@ -24,17 +24,26 @@ DNSSD.prototype.browse=function(regType, domain, serviceFound, serviceLost) {
 	return cordova.exec(success, function(){}, "fi.peekpoke.cordova.dnssd", "browse", [regType, domain]);
 }
 
-DNSSD.prototype.resolve=function(serviceName, regType, domain, serviceResolved) { 
-
-    console.log("resolve "+serviceName);
-    function success(result)
-    {
-        if(result.serviceResolved)
-            serviceResolved(result.hostName, result.port, result.serviceName, result.regType, result.domain);
+DNSSD.prototype.resolve = function (serviceName, regType, domain, serviceResolved) {
+    // check for alternate signature: "object, fn"
+    var success;
+    if (serviceName === Object(serviceName) && (typeof(regType) == 'function')) {
+        var svc = serviceName;
+        success = regType;
+        serviceName = svc.serviceName;
+        regType = svc.regType;
+        domain = svc.domain;
+    } else {
+        success = function (result) {
+            if (result.serviceResolved) {
+                serviceResolved(result.hostName, result.port, result.serviceName, result.regType, result.domain);
+            }
+        }
     }
-	
-	return cordova.exec(success, function(){}, "fi.peekpoke.cordova.dnssd", "resolve", [serviceName, regType, domain]);
-}
+
+    console.log("resolve " + serviceName);
+    return cordova.exec(success, function () {}, "fi.peekpoke.cordova.dnssd", "resolve", [serviceName, regType, domain]);
+};
 
 cordova.addConstructor(function() {
 	console.log('initializing window.plugins.dnssd'); 
